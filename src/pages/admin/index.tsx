@@ -18,7 +18,7 @@ const Admin: NextPage = (props) => {
   const { data: options, mutate } = useSWR<IOption[]>('/api/options', fetcher)
 
   const deleteOption = async (optionId: string) => {
-    await fetch('/api/options', {
+    await fetch('/api/protected/options', {
       method: 'DELETE',
       body: JSON.stringify({ optionId: optionId }),
       headers: { 'Content-Type': 'application/json' },
@@ -27,7 +27,7 @@ const Admin: NextPage = (props) => {
   }
   const generateArt = () => {
     console.log('generating art')
-    fetch('/api/art', {
+    fetch('/api/protected/art', {
       method: 'post',
     })
       .then((res) => res.json())
