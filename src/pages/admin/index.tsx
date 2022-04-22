@@ -1,3 +1,4 @@
+import { withPageAuthRequired } from '@auth0/nextjs-auth0'
 import {
   Box,
   Button,
@@ -9,17 +10,11 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import type { NextPage } from 'next'
-import { GetServerSideProps } from 'next'
-import { useState } from 'react'
 import useSWR from 'swr'
 import { fetcher } from '../../components/fetcher'
 import { IOption } from '../../model/Option'
 
-interface AdminProps {
-  authenticated: boolean
-}
-const Admin: NextPage<AdminProps> = (props) => {
-  const [adminSecret, setAdminSecret] = useState<string | undefined>()
+const Admin: NextPage = (props) => {
   const { data: options, mutate } = useSWR<IOption[]>('/api/options', fetcher)
 
   const deleteOption = async (optionId: string) => {
@@ -64,24 +59,5 @@ const Admin: NextPage<AdminProps> = (props) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const adminSecret = context?.params?.adminSecret
-  const secretOk = adminSecret === process.env.ADMIN_SECRET
-
-  if (secretOk) {
-    return {
-      props: {
-        authenticated: secretOk,
-      },
-    }
-  }
-
-  return {
-    redirect: {
-      destination: '/',
-      permanent: false,
-    },
-  }
-}
-
 export default Admin
+export const getServerSideProps = withPageAuthRequired()

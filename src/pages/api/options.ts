@@ -19,17 +19,4 @@ optionsHandler.post = async (req, res) => {
   }
 }
 
-//TODO adminOnly
-optionsHandler.delete = async (req, res) => {
-  console.log('delete request')
-  const optionId = req.body.optionId
-  try {
-    await Option.deleteOne({ _id: optionId })
-    res.status(200).end()
-  } catch (error) {
-    console.log(error)
-    res.status(400).end()
-  }
-}
-
 export default optionsHandler.handleRequest
