@@ -6,13 +6,12 @@ import { generateArt } from '../../../services/artService'
 
 const artHandler = new RequestHandler<IArt[]>()
 
-//TODO only admin
 artHandler.post = async (req, res) => {
-  const optionId = req.body.optionId
-  const option = await Option.findOne().sort({ votes: -1 })
+  const option = await Option.findOne({ generated: false }).sort({ votes: -1 })
   console.log('option with most votes', option)
   const art = await generateArt(option)
   const createdArt = await Art.create(art)
+  await Option.updateOne({ _id: option._id }, { generated: true })
   res.status(200).json(createdArt)
 }
 

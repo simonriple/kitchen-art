@@ -18,11 +18,13 @@ import type { NextPage } from 'next'
 import { useState } from 'react'
 import useSWR from 'swr'
 import { fetcher } from '../components/fetcher'
+import { useVoteRestricter } from '../components/useVoteRestricter'
 import { IOption } from '../model/Option'
 import vote from './api/vote'
 
 const Vote: NextPage = () => {
   const [inputValue, setInputValue] = useState('')
+  const { canVote, setLastVoteDate } = useVoteRestricter()
   const { data: options, mutate } = useSWR<IOption[]>('/api/options', fetcher)
   const postOption = async () => {
     if (inputValue === '') return
@@ -45,7 +47,10 @@ const Vote: NextPage = () => {
       headers: { 'Content-Type': 'application/json' },
     })
       .then((res) => res.json())
-      .then((json) => console.log(json))
+      .then((json) => {
+        setLastVoteDate()
+        console.log(json)
+      })
     mutate()
   }
 
@@ -73,7 +78,12 @@ const Vote: NextPage = () => {
                     <Text>
                       {option.optionText} - {option.votes}
                     </Text>
-                    <Button onClick={() => vote(option._id)}>Vote</Button>
+                    <Button
+                      onClick={() => vote(option._id)}
+                      disabled={!canVote}
+                    >
+                      Vote
+                    </Button>
                   </HStack>
                 </Box>
               ))}
