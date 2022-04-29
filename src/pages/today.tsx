@@ -35,27 +35,21 @@ const Home: NextPage = () => {
       flexDirection='column'
       alignItems='center'
     >
-      <Box flex={'0 1 0'}>
-        <Heading textAlign='center'>AI generated art</Heading>
-        <Text textAlign='center'>
-          Art generated from user-submitted text description using VQGAN+CLIP
-          algorithm
-        </Text>
-      </Box>
-      <Divider />
       {image && (
-        <Box flex={'1 1 0'} maxHeight='100%' padding={6}>
-          <Image
-            src={image.artUrl}
-            height='1000px'
-            width='1000px'
-            // layout='responsive'
-            alt={image.artDescription ?? 'art'}
-          />
-          {image.artDescription && (
-            <Text textAlign='center'>{image.artDescription}</Text>
-          )}
-        </Box>
+        <>
+          <Box flex={'0 1 0'}>
+            <Heading textAlign='center'>{image.artDescription}</Heading>
+          </Box>
+          <Box flex={'1 1 0'} maxHeight='100%' padding={6}>
+            <Image
+              src={image.artUrl}
+              height='1000px'
+              width='1000px'
+              // layout='responsive'
+              alt={image.artDescription ?? 'art'}
+            />
+          </Box>
+        </>
       )}
       <Divider />
       <Box flex={'0 1 0'}>
