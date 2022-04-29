@@ -4,7 +4,7 @@ import Option, { IOption } from '../../model/Option'
 const optionsHandler = new RequestHandler<IOption[]>()
 
 optionsHandler.get = async (req, res) => {
-  const options = await Option.find({ generated: false })
+  const options = await Option.find({ generated: false }).sort({ votes: -1 })
   res.status(200).json(options)
 }
 

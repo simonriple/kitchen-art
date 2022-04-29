@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['kitchenartstorage.blob.core.windows.net'],
+    domains: ['pocsandrdstorageaccount.blob.core.windows.net'],
   },
 }
 
