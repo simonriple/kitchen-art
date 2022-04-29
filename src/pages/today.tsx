@@ -3,6 +3,7 @@ import {
   Button,
   Center,
   Divider,
+  Flex,
   Heading,
   HStack,
   Modal,
@@ -24,44 +25,46 @@ const Home: NextPage = () => {
     refreshInterval: 3600000,
   })
   return (
-    <Center>
-      <Box paddingLeft={10} paddingRight={10}>
-        <Box padding={4}>
-          <Center>
-            <VStack spacing={6}>
-              <Box width='100%'>
-                <Heading textAlign='center'>AI generated art</Heading>
-                <Text textAlign='center'>
-                  Art generated from user-submitted text description using
-                  VQGAN+CLIP algorithm
-                </Text>
-              </Box>
-              <Divider />
-              {image && (
-                <Box>
-                  <Image
-                    src={image.artUrl}
-                    height='1000px'
-                    width='1000px'
-                    alt={image.artDescription ?? 'art'}
-                  />
-                  {image.artDescription && (
-                    <Text textAlign='center'>{image.artDescription}</Text>
-                  )}
-                </Box>
-              )}
-              <Divider />
-              <Box width='100%'>
-                <Text textAlign='center'>
-                  Go to https://riple.art/vote to submit options for tomorrows
-                  art or vote for your favourite option
-                </Text>
-              </Box>
-            </VStack>
-          </Center>
-        </Box>
+    <Box
+      paddingLeft={10}
+      paddingRight={10}
+      paddingTop={4}
+      paddingBottom={4}
+      height='100vh'
+      display='flex'
+      flexDirection='column'
+      alignItems='center'
+    >
+      <Box flex={'0 1 0'}>
+        <Heading textAlign='center'>AI generated art</Heading>
+        <Text textAlign='center'>
+          Art generated from user-submitted text description using VQGAN+CLIP
+          algorithm
+        </Text>
       </Box>
-    </Center>
+      <Divider />
+      {image && (
+        <Box flex={'1 1 0'} maxHeight='100%' padding={6}>
+          <Image
+            src={image.artUrl}
+            height='1000px'
+            width='1000px'
+            // layout='responsive'
+            alt={image.artDescription ?? 'art'}
+          />
+          {image.artDescription && (
+            <Text textAlign='center'>{image.artDescription}</Text>
+          )}
+        </Box>
+      )}
+      <Divider />
+      <Box flex={'0 1 0'}>
+        <Text textAlign='center'>
+          Go to https://riple.art/vote to submit options for tomorrows art or
+          vote for your favourite option
+        </Text>
+      </Box>
+    </Box>
   )
 }
 
