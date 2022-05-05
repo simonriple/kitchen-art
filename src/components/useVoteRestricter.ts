@@ -5,7 +5,7 @@ export const useVoteRestricter = () => {
   useEffect(() => {
     const storageValue = localStorage.getItem('LastVoteDate')
     if (storageValue) {
-      setStorageDate(new Date(storageValue))
+      setStorageDate(new Date(Number(storageValue)))
     }
   }, [])
 
@@ -17,11 +17,14 @@ export const useVoteRestricter = () => {
     }
   }
 
-  const canVote = useMemo(() => {
+  const canVote = () => {
     if (!storageDate) return true
-    const msDelta = storageDate.setHours(24).valueOf() - storageDate.valueOf()
-    return msDelta < 0
-  }, [storageDate])
+    const midnight = new Date(storageDate)
+    midnight.setHours(24)
+    midnight.setMinutes(0)
+    midnight.setSeconds(0)
+    return new Date(Date.now()) > midnight
+  }
 
   return {
     canVote,

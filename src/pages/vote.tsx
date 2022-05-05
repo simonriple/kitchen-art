@@ -15,17 +15,18 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import type { NextPage } from 'next'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { fetcher } from '../components/fetcher'
 import { useVoteRestricter } from '../components/useVoteRestricter'
 import { IOption } from '../model/Option'
-import vote from './api/vote'
 
 const Vote: NextPage = () => {
   const [inputValue, setInputValue] = useState('')
   const { canVote, setLastVoteDate } = useVoteRestricter()
   const { data: options, mutate } = useSWR<IOption[]>('/api/options', fetcher)
+
+  const disableVoting = useMemo(() => !canVote(), [canVote])
   const postOption = async () => {
     if (inputValue === '') return
     await fetch('/api/options', {
@@ -80,7 +81,7 @@ const Vote: NextPage = () => {
                     </Text>
                     <Button
                       onClick={() => vote(option._id)}
-                      disabled={!canVote}
+                      disabled={disableVoting}
                     >
                       Vote
                     </Button>
