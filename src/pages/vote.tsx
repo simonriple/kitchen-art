@@ -2,6 +2,8 @@ import {
   Box,
   Button,
   Center,
+  Container,
+  Divider,
   FormControl,
   FormLabel,
   Heading,
@@ -57,10 +59,18 @@ const Vote: NextPage = () => {
 
   return (
     <Center>
-      <VStack>
-        <Box>
-          <Heading fontSize='md'>Add an option for tommorrows art</Heading>
+      <Container maxW='sm'>
+        <VStack spacing={4}>
+          <Heading>Riple.art</Heading>
+          <Text textAlign='center'>
+            riple.art generates a piece of art every day from user-submitted
+            text using VQGAN+CLIP algorithm. Add your suggestion or vote for the
+            suggestion you want the AI to generate.
+          </Text>
+
+          <Heading fontSize='md'>Add a suggestion for tommorrows art</Heading>
           <Textarea
+            borderColor='gray.400'
             resize='none'
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
@@ -68,29 +78,32 @@ const Vote: NextPage = () => {
           <Button width='100%' onClick={() => postOption()}>
             Send
           </Button>
-        </Box>
-        <Box>
-          <Heading fontSize='md'>Options for tommorrow:</Heading>
-          <VStack divider={<StackDivider />}>
-            {options &&
-              options.map((option, id) => (
-                <Box key={id}>
-                  <HStack>
-                    <Text>
-                      {option.optionText} - {option.votes}
-                    </Text>
-                    <Button
-                      onClick={() => vote(option._id)}
-                      disabled={disableVoting}
-                    >
-                      Vote
-                    </Button>
-                  </HStack>
-                </Box>
-              ))}
-          </VStack>
-        </Box>
-      </VStack>
+
+          <Box>
+            <Heading fontSize='md' textAlign='center'>
+              Suggestions for tommorrow:
+            </Heading>
+            <VStack divider={<Divider />}>
+              {options &&
+                options.map((option, id) => (
+                  <Box key={id}>
+                    <HStack>
+                      <Text>
+                        {option.optionText} - {option.votes}
+                      </Text>
+                      <Button
+                        onClick={() => vote(option._id)}
+                        disabled={disableVoting}
+                      >
+                        Vote
+                      </Button>
+                    </HStack>
+                  </Box>
+                ))}
+            </VStack>
+          </Box>
+        </VStack>
+      </Container>
     </Center>
   )
 }

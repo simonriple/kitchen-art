@@ -54,8 +54,7 @@ const Home: NextPage = () => {
       <Divider />
       <Box flex={'0 1 0'}>
         <Text textAlign='center'>
-          Go to https://riple.art/vote to submit options for tomorrows art or
-          vote for your favourite option
+          Go to https://riple.art/vote to decice tomorrows AI generated art
         </Text>
       </Box>
     </Box>
