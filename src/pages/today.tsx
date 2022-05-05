@@ -43,8 +43,8 @@ const Home: NextPage = () => {
           <Box flex={'1 1 0'} maxHeight='100%' padding={6}>
             <Image
               src={image.artUrl}
-              height='1000px'
-              width='1000px'
+              height='900px'
+              width='900px'
               // layout='responsive'
               alt={image.artDescription ?? 'art'}
             />
