@@ -1,4 +1,5 @@
 import { BlobServiceClient } from '@azure/storage-blob'
+import { getAverageColor } from 'fast-average-color-node'
 import { retryFetch } from '../components/fetcher'
 import { IArt } from '../model/Art'
 import { IOption } from '../model/Option'
@@ -53,9 +54,11 @@ export const generateArt = async (option: IOption) => {
   )
   console.log(artUrlResponse)
   const imageBuffer = await getArtImage(artUrlResponse.image_id)
-
+  let averageColor = undefined
   if (imageBuffer) {
     console.log('got image')
+    const { hex } = await getAverageColor(imageBuffer)
+    averageColor = hex
     await uploadToAzure(artUrlResponse.image_id, imageBuffer)
   } else {
     console.log('no image')
@@ -65,6 +68,7 @@ export const generateArt = async (option: IOption) => {
     optionId: option._id,
     artUrl: `${process.env.AZURE_STORAGE_URL}/${process.env.AZURE_STORAGE_CONTAINER}/${artUrlResponse.image_id}.jpg`,
     artDescription: option.optionText,
+    averageColor: averageColor,
   }
   return art
 }

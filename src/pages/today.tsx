@@ -34,6 +34,9 @@ const Home: NextPage = () => {
       display='flex'
       flexDirection='column'
       alignItems='center'
+      backgroundColor={
+        image?.averageColor ? `${image.averageColor}90` : 'inherit'
+      }
     >
       {image && (
         <>

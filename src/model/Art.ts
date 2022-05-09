@@ -7,6 +7,7 @@ export interface IArt {
   artUrl: string
   artDescription: string
   generatedDate: Date
+  averageColor?: string
 }
 
 const ArtSchema = new mongoose.Schema<IArt>({
@@ -14,6 +15,7 @@ const ArtSchema = new mongoose.Schema<IArt>({
   artUrl: String,
   artDescription: String,
   generatedDate: { type: Date, default: Date.now, index: true },
+  averageColor: String,
 })
 
 export default mongoose.models.Art || mongoose.model('Art', ArtSchema)
