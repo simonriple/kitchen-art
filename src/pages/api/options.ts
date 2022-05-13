@@ -1,4 +1,5 @@
 import RequestHandler from '../../components/RequestHandler'
+import { sendSlackMessage } from '../../components/slackBot'
 import Option, { IOption } from '../../model/Option'
 
 const optionsHandler = new RequestHandler<IOption[]>()
@@ -13,6 +14,7 @@ optionsHandler.post = async (req, res) => {
   try {
     const newOption = new Option({ optionText: req.body.optionText })
     const option = await Option.create(newOption)
+    sendSlackMessage(`New option added: ${newOption.optionText}`)
     res.status(201).json(option)
   } catch (error) {
     res.status(400).end()

@@ -1,6 +1,7 @@
 import { BlobServiceClient } from '@azure/storage-blob'
 import { getAverageColor } from 'fast-average-color-node'
 import { retryFetch } from '../components/fetcher'
+import { sendSlackMessage } from '../components/slackBot'
 import Art, { IArt } from '../model/Art'
 import Option, { IOption } from '../model/Option'
 const { v1: uuidv1 } = require('uuid')
@@ -84,6 +85,7 @@ export const getGenratedArt = async () => {
         averageColor: averageColor,
       }
       const updatedArt = await Art.updateOne({ _id: art._id }, artUpdate)
+      sendSlackMessage(`New image generated`)
       return updatedArt.acknowledged
     } else {
       console.log('no image')
