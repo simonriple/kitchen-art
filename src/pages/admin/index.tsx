@@ -25,19 +25,30 @@ const Admin: NextPage = (props) => {
     })
     mutate()
   }
-  const generateArt = () => {
-    console.log('generating art')
-    fetch('/api/protected/art', {
+  const startGeneratingArt = () => {
+    fetch('/api/protected/art/generate', {
       method: 'post',
     })
       .then((res) => res.json())
       .then((json) => console.log(json))
   }
+  const getGeneratedArt = () => {
+    console.log('generating art')
+    fetch('/api/protected/art/getGenerated', {
+      method: 'post',
+    })
+      .then((res) => res.json())
+      .then((json) => console.log(json))
+  }
+
   return (
     <Center>
       <VStack>
         <Text>Hello admin</Text>
-        <Button onClick={() => generateArt()}>Generate art</Button>
+        <Button onClick={() => startGeneratingArt()}>
+          Start art generation
+        </Button>
+        <Button onClick={() => getGeneratedArt()}>Get generated art</Button>
         <Box>
           <Heading fontSize='md'>Options</Heading>
           {options &&

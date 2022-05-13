@@ -1,0 +1,21 @@
+name: Gererating art
+on:
+  schedule:
+    - cron: '15 05 * * 1-5'
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start art generation
+        run: |
+          curl --request POST \
+          --url 'https://riple.art/api/protected/art/external/generate' \
+          --header 'Authorization: Bearer ${{ secrets.API_SECRET_KEY }}'
+      - name: Sleep
+        run: sleep 2m
+        shell: bash
+      - name: Get generated art
+        run: |
+          curl --request POST \
+          --url 'https://riple.art/api/protected/art/external/getGenerated' \
+          --header 'Authorization: Bearer ${{ secrets.API_SECRET_KEY }}'

@@ -1,8 +1,8 @@
 import { BlobServiceClient } from '@azure/storage-blob'
 import { getAverageColor } from 'fast-average-color-node'
 import { retryFetch } from '../components/fetcher'
-import { IArt } from '../model/Art'
-import { IOption } from '../model/Option'
+import Art, { IArt } from '../model/Art'
+import Option, { IOption } from '../model/Option'
 const { v1: uuidv1 } = require('uuid')
 interface ArtGeneratorResponse {
   image_id: string
@@ -48,27 +48,47 @@ const getArtImage = async (imageId: string) =>
     .then((res) => res.arrayBuffer())
     .then((ab) => Buffer.from(ab))
 
-export const generateArt = async (option: IOption) => {
-  const artUrlResponse: ArtGeneratorResponse = await generateArtRequest(
-    option.optionText
-  )
-  console.log(artUrlResponse)
-  const imageBuffer = await getArtImage(artUrlResponse.image_id)
-  let averageColor = undefined
-  if (imageBuffer) {
-    console.log('got image')
-    const { hex } = await getAverageColor(imageBuffer)
-    averageColor = hex
-    await uploadToAzure(artUrlResponse.image_id, imageBuffer)
-  } else {
-    console.log('no image')
+export const startArtGeneration = async () => {
+  const option = await Option.findOne<IOption>({ generated: false }).sort({
+    votes: -1,
+  })
+  if (option) {
+    const artUrlResponse: ArtGeneratorResponse = await generateArtRequest(
+      option.optionText
+    )
+    const createdArt = await Art.create<Partial<IArt>>({
+      externalArtId: artUrlResponse.image_id,
+      optionId: option._id,
+      artDescription: option.optionText,
+      generating: true,
+    })
+
+    await Option.updateOne({ _id: option._id }, { generated: true })
+
+    return createdArt
+  }
+  return null
+}
+
+export const getGenratedArt = async () => {
+  const art = await Art.findOne<IArt>({ generating: true })
+  if (art && art.externalArtId) {
+    const imageBuffer = await getArtImage(art.externalArtId)
+    if (imageBuffer) {
+      console.log('got image')
+      const { hex: averageColor } = await getAverageColor(imageBuffer)
+      await uploadToAzure(art.externalArtId, imageBuffer)
+      const artUpdate: Partial<IArt> = {
+        generating: false,
+        artUrl: `${process.env.AZURE_STORAGE_URL}/${process.env.AZURE_STORAGE_CONTAINER}/${art.externalArtId}.jpg`,
+        averageColor: averageColor,
+      }
+      const updatedArt = await Art.updateOne({ _id: art._id }, artUpdate)
+      return updatedArt.acknowledged
+    } else {
+      console.log('no image')
+    }
   }
 
-  const art: Partial<IArt> = {
-    optionId: option._id,
-    artUrl: `${process.env.AZURE_STORAGE_URL}/${process.env.AZURE_STORAGE_CONTAINER}/${artUrlResponse.image_id}.jpg`,
-    artDescription: option.optionText,
-    averageColor: averageColor,
-  }
-  return art
+  return false
 }
