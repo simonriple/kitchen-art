@@ -10,9 +10,8 @@ export default async function startArtGenerationHandler(
       const { authorization } = req.headers
 
       if (authorization === `Bearer ${process.env.API_SECRET_KEY}`) {
-        // const createdArt = await startArtGeneration()
-        console.log('generating')
-        res.status(200).json({ message: 'starting generation' })
+        const createdArt = await startArtGeneration()
+        res.status(200).json(createdArt)
       } else {
         res.status(401).json({ success: false })
       }

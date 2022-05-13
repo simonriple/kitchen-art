@@ -2,7 +2,7 @@ name: Gererating art
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/10 * * * 1-5'
+    - cron: '0 06 * * 1-5'
 jobs:
   cron:
     runs-on: ubuntu-latest
