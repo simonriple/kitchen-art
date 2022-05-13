@@ -9,7 +9,7 @@ jobs:
       - name: Start art generation
         run: |
           curl --request POST \
-          --url 'https://riple.art/api/protected/art/external/generate' \
+          --url 'https://www.riple.art/api/protected/art/external/generate' \
           --header 'Authorization: Bearer ${{ secrets.API_SECRET_KEY }}'
       - name: Sleep
         run: sleep 2m
@@ -17,5 +17,5 @@ jobs:
       - name: Get generated art
         run: |
           curl --request POST \
-          --url 'https://riple.art/api/protected/art/external/getGenerated' \
+          --url 'https://www.riple.art/api/protected/art/external/getGenerated' \
           --header 'Authorization: Bearer ${{ secrets.API_SECRET_KEY }}'
