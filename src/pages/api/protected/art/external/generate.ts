@@ -11,6 +11,7 @@ export default async function startArtGenerationHandler(
 
       if (authorization === `Bearer ${process.env.API_SECRET_KEY}`) {
         // const createdArt = await startArtGeneration()
+        console.log('generating')
         res.status(200).json({ message: 'starting generation' })
       } else {
         res.status(401).json({ success: false })

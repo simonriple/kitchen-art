@@ -1,7 +1,7 @@
 name: Gererating art
 on:
   schedule:
-    - cron: '15 05 * * 1-5'
+    - cron: '00 15 * * 1-5'
 jobs:
   cron:
     runs-on: ubuntu-latest
