@@ -7,6 +7,12 @@ jobs:
   cron:
     runs-on: ubuntu-latest
     steps:
+      - name: Wake up
+        run: |
+          curl --url 'https://www.riple.art/'
+      - name: Wait for wake up
+        run: sleep 2m
+        shell: bash
       - name: Start art generation
         run: |
           curl --request POST \
