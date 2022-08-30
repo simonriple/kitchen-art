@@ -33,8 +33,8 @@ const Home: NextPage = () => {
             <VStack>
               <Heading textAlign='center'>AI generated art</Heading>
               <Text textAlign='center'>
-                Art generated from user-submitted text description using
-                VQGAN+CLIP algorithm
+                Art generated from user-submitted text description using DALL-E
+                2 algorithm
               </Text>
               <Link href={'/vote'} passHref>
                 <Button>Vote for tomorrows art</Button>
