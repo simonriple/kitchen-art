@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 
-export const useVoteRestricter = () => {
+export const useVoteRestricter = (storageKey: string) => {
   const [storageDate, setStorageDate] = useState<Date | undefined>()
   useEffect(() => {
-    const storageValue = localStorage.getItem('LastVoteDate')
+    const storageValue = localStorage.getItem(storageKey)
     if (storageValue) {
       setStorageDate(new Date(Number(storageValue)))
     }
@@ -13,7 +13,7 @@ export const useVoteRestricter = () => {
     const now = Date.now()
     setStorageDate(new Date(now))
     if (typeof window !== 'undefined') {
-      localStorage.setItem('LastVoteDate', Date.now().toString())
+      localStorage.setItem(storageKey, Date.now().toString())
     }
   }
 

@@ -1,10 +1,21 @@
 import RequestHandler from '../../../components/RequestHandler'
-import Art, { IArt } from '../../../model/Art'
+import Art, { IArt, OptionArts } from '../../../model/Art'
 
-const artHandler = new RequestHandler<IArt[]>()
+const artHandler = new RequestHandler<OptionArts[]>()
 
 artHandler.get = async (req, res) => {
-  const arts = await Art.find({}).sort({ generatedDate: -1 })
+  const arts = await Art.aggregate<OptionArts>([
+    { $match: { generating: false } },
+    { $sort: { generatedDate: -1 } },
+    {
+      $group: {
+        _id: '$optionId',
+        description: { $first: '$artDescription' },
+        images: { $push: '$$ROOT' },
+      },
+    },
+  ])
+
   res.status(200).json(arts)
 }
 

@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   Heading,
   HStack,
   Modal,
@@ -19,12 +20,12 @@ import Link from 'next/link'
 import { useState } from 'react'
 import useSWR from 'swr'
 import { fetcher } from '../components/fetcher'
-import { IArt } from '../model/Art'
+import { IArt, OptionArts } from '../model/Art'
 
 const Home: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedArt, setSelectedArt] = useState<IArt | null>()
-  const { data: images } = useSWR<IArt[]>('/api/art', fetcher)
+  const { data: optionArts } = useSWR<OptionArts[]>('/api/art', fetcher)
   return (
     <Center>
       <Box paddingLeft={10} paddingRight={10}>
@@ -42,24 +43,30 @@ const Home: NextPage = () => {
             </VStack>
           </Center>
         </Box>
-        <SimpleGrid columns={[1, 2, 4]} spacing={10}>
-          {images &&
-            images.map((image) => (
-              <VStack key={image._id}>
-                <Image
-                  src={image.artUrl}
-                  height='516px'
-                  width='516px'
-                  alt={image.artDescription ?? 'art'}
-                  onClick={() => {
-                    setSelectedArt(image)
-                    onOpen()
-                  }}
-                />
-                {image.artDescription && <Text>{image.artDescription}</Text>}
+        <Flex direction='row' wrap='wrap' justify='center'>
+          {optionArts &&
+            optionArts.map((optionArt, idx) => (
+              <VStack key={idx}>
+                <HStack spacing={2}>
+                  {optionArt.images.map((image) => (
+                    <Box key={image._id} flex={'1 1 0'} padding={1}>
+                      <Image
+                        src={image.artUrl}
+                        height='516px'
+                        width='516px'
+                        alt={image.artDescription ?? 'art'}
+                        onClick={() => {
+                          setSelectedArt(image)
+                          onOpen()
+                        }}
+                      />
+                    </Box>
+                  ))}
+                </HStack>
+                {optionArt.description && <Text>{optionArt.description}</Text>}
               </VStack>
             ))}
-        </SimpleGrid>
+        </Flex>
         <Modal
           isOpen={isOpen}
           onClose={() => {

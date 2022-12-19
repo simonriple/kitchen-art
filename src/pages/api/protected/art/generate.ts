@@ -3,7 +3,10 @@ import RequestHandler from '../../../../components/RequestHandler'
 import { IArt } from '../../../../model/Art'
 import { startArtGeneration } from '../../../../services/artService'
 
-const artHandler = new RequestHandler<IArt[]>()
+const artHandler = new RequestHandler<{
+  Dalle2: IArt[]
+  Hypnogram: IArt[]
+} | null>()
 
 artHandler.post = async (req, res) => {
   const createdArt = await startArtGeneration()
