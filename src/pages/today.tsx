@@ -24,7 +24,7 @@ import { IArt, OptionArts } from '../model/Art'
 
 const Home: NextPage = () => {
   const { data: optionArts } = useSWR<OptionArts>('/api/art/today', fetcher, {
-    refreshInterval: 3600000,
+    refreshInterval: 60000,
   })
   return (
     <Box
