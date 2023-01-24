@@ -12,29 +12,7 @@ import {
   generateArtRequestHypnogram,
   getGeneratedArtHypnogram,
 } from './artProviders/hypnogramService'
-
-const uploadToAzure = async (imageId: string, data: Buffer) => {
-  const blobServiceClient = BlobServiceClient.fromConnectionString(
-    `${process.env.AZURE_STORAGE}`
-  )
-
-  console.log('connecting to container:', process.env.AZURE_STORAGE_CONTAINER)
-  const containerClient = blobServiceClient.getContainerClient(
-    `${process.env.AZURE_STORAGE_CONTAINER}`
-  )
-  // const createContainerResponse = await containerClient.create()
-  console.log('Container was connected successfully')
-
-  //Upload
-  const blockBlobClient = containerClient.getBlockBlobClient(`${imageId}.jpg`)
-  console.log('getBlockBlobClient ok')
-  const uploadBlobResponse = await blockBlobClient.upload(data, data.length, {
-    blobHTTPHeaders: {
-      blobContentType: 'image/jpeg',
-    },
-  })
-  console.log('upload ok', uploadBlobResponse)
-}
+import { uploadBufferToFileStorage } from './fileService'
 
 export const startArtGeneration = async () => {
   const option = await Option.findOne<IOption>({ generated: false }).sort({
@@ -88,7 +66,7 @@ export const getGenratedArt = async () => {
     )
     if (hypnogramImageBuffer) {
       console.log('got Hypnogram image')
-      hypnogramSuccess = await uploadBufferToAzure(
+      hypnogramSuccess = await uploadBufferToFileStorage(
         hypnogramImageBuffer,
         hypnogramArt
       )
@@ -102,27 +80,13 @@ export const getGenratedArt = async () => {
     )
     if (dalle2ImageBuffer) {
       console.log('got Dalle2 image')
-      dalle2Success = await uploadBufferToAzure(dalle2ImageBuffer, dalle2Art)
+      dalle2Success = await uploadBufferToFileStorage(
+        dalle2ImageBuffer,
+        dalle2Art
+      )
     } else {
       console.log('no Dalle2 image')
     }
   }
   return hypnogramSuccess && dalle2Success
-}
-
-const uploadBufferToAzure = async (image: Buffer, art: IArt) => {
-  if (art.externalArtId && image) {
-    const { hex: averageColor } = await getAverageColor(image)
-    await uploadToAzure(art.externalArtId, image)
-    const artUpdate: Partial<IArt> = {
-      generating: false,
-      artUrl: `${process.env.AZURE_STORAGE_URL}/${process.env.AZURE_STORAGE_CONTAINER}/${art.externalArtId}.jpg`,
-      averageColor: averageColor,
-    }
-    console.log('updating Art', artUpdate)
-    const updatedArt = await Art.updateOne({ _id: art._id }, artUpdate)
-    console.log('updated', updatedArt.acknowledged)
-    sendSlackMessage(`New image generated`)
-    return updatedArt.acknowledged
-  }
 }

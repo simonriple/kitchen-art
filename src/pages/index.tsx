@@ -51,7 +51,7 @@ const Home: NextPage = () => {
                   {optionArt.images.map((image) => (
                     <Box key={image._id} flex={'1 1 0'} padding={1}>
                       <Image
-                        src={image.artUrl}
+                        src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}/${image.externalArtId}.jpg`}
                         height='516px'
                         width='516px'
                         alt={image.artDescription ?? 'art'}
@@ -84,7 +84,7 @@ const Home: NextPage = () => {
           >
             {selectedArt && selectedArt.artUrl && (
               <Image
-                src={selectedArt?.artUrl}
+                src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}/${selectedArt.externalArtId}.jpg`}
                 height='516px'
                 width='516px'
                 alt={selectedArt?.artDescription ?? 'art'}

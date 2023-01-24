@@ -49,7 +49,7 @@ const Home: NextPage = () => {
             <Stack key={idx}>
               <Box flex={'1 1 0'} padding={6}>
                 <Image
-                  src={image.artUrl}
+                  src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}/${image.externalArtId}.jpg`}
                   height='900px'
                   width='900px'
                   // layout='responsive'

@@ -6,14 +6,15 @@ const artTodayHandler = new RequestHandler<OptionArts>()
 artTodayHandler.get = async (req, res) => {
   const art = await Art.aggregate<OptionArts>([
     { $match: { generating: false } },
-    { $sort: { generatedDate: -1 } },
     {
       $group: {
         _id: '$optionId',
         description: { $first: '$artDescription' },
+        date: { $first: '$generatedDate' },
         images: { $push: '$$ROOT' },
       },
     },
+    { $sort: { date: -1 } },
     { $limit: 1 },
   ])
   // sort({ generatedDate: -1 }).aggregate({})
