@@ -60,33 +60,28 @@ export const getGenratedArt = async () => {
     artProvider: ArtProviderEnum.DALLE2,
   })
   let hypnogramSuccess, dalle2Success
-  if (hypnogramArt && hypnogramArt.externalArtId) {
-    const hypnogramImageBuffer = await getGeneratedArtHypnogram(
-      hypnogramArt.externalArtId
-    )
-    if (hypnogramImageBuffer) {
-      console.log('got Hypnogram image')
-      hypnogramSuccess = await uploadBufferToFileStorage(
-        hypnogramImageBuffer,
-        hypnogramArt
-      )
+  if (
+    hypnogramArt &&
+    hypnogramArt.externalArtId &&
+    dalle2Art &&
+    dalle2Art.externalArtId
+  ) {
+    const [hypnogramImageBuffer, dalle2ImageBuffer] = await Promise.all([
+      getGeneratedArtHypnogram(hypnogramArt.externalArtId),
+      getGeneratedArtDalle2(dalle2Art.externalArtId),
+    ])
+
+    if (hypnogramImageBuffer && dalle2ImageBuffer) {
+      console.log('got Hypnogram and dalle2 image')
+      const [hypnogramSuccess, dalle2Success] = await Promise.all([
+        uploadBufferToFileStorage(hypnogramImageBuffer, hypnogramArt),
+        uploadBufferToFileStorage(dalle2ImageBuffer, dalle2Art),
+      ])
+      console.log('Sucessfully upladed images')
     } else {
-      console.log('no Hypnogram image')
+      console.log('no images found')
     }
   }
-  if (dalle2Art && dalle2Art.externalArtId) {
-    const dalle2ImageBuffer = await getGeneratedArtDalle2(
-      dalle2Art.externalArtId
-    )
-    if (dalle2ImageBuffer) {
-      console.log('got Dalle2 image')
-      dalle2Success = await uploadBufferToFileStorage(
-        dalle2ImageBuffer,
-        dalle2Art
-      )
-    } else {
-      console.log('no Dalle2 image')
-    }
-  }
+
   return hypnogramSuccess && dalle2Success
 }
